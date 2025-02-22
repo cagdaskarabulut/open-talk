@@ -19,7 +19,7 @@ const Home = () => {
   async function socketInitializer() {
     await fetch("/api/socket");
 
-    socket = io();
+    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3000");
 
     socket.on("receive-message", (data) => {
       setAllMessages((pre) => [...pre, data]);

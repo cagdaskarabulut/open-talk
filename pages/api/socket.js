@@ -1,21 +1,27 @@
 import { Server } from "socket.io";
 
-export default function SocketHandler(req, res) {
+export default function handler(req, res) {
   if (res.socket.server.io) {
-    console.log("Already set up");
+    console.log("Socket is already running");
     res.end();
     return;
   }
 
+  console.log("Socket is initializing");
   const io = new Server(res.socket.server);
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
-    socket.on("send-message", (obj) => {
-      io.emit("receive-message", obj);
+    console.log("User connected");
+
+    socket.on("send-message", (data) => {
+      io.emit("receive-message", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("User disconnected");
     });
   });
 
-  console.log("Setting up socket");
   res.end();
 }
