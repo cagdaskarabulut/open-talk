@@ -1,3 +1,4 @@
+"use server";
 import { Server } from "socket.io";
 
 export default function handler(req, res) {
@@ -8,7 +9,14 @@ export default function handler(req, res) {
   }
 
   console.log("Socket is initializing");
-  const io = new Server(res.socket.server);
+  const io = new Server(res.socket.server, {
+    cors: {
+      origin: ["http://localhost:3000", "https://open-talk-six.vercel.app"],
+      methods: ["GET", "POST"],
+      allowedHeaders: ["my-custom-header"],
+      credentials: true,
+    },
+  });
   res.socket.server.io = io;
 
   io.on("connection", (socket) => {
